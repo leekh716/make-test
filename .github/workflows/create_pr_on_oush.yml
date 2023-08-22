@@ -23,7 +23,7 @@ jobs:
           RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
-          if [ ${{ github.actor }} ="kunlee" ]; then
+          if [ ${{ github.actor }} ="leekh716" ]; then
             echo REVIEWER="rhiokim" >> $GITHUB_ENV
           else
             echo REVIEWER="kunlee" >> $GITHUB_ENV
