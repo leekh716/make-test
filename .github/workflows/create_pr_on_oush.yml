@@ -24,7 +24,7 @@ jobs:
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
           if [ $GITHUB_ACTOR ="kunlee" ]; then
-            cho REVIEWER="rhiokim" >> $GITHUB_ENV
+            echo REVIEWER="rhiokim" >> $GITHUB_ENV
           else
             echo REVIEWER="kunlee" >> $GITHUB_ENV
 
