@@ -35,6 +35,6 @@ jobs:
           target_branch: "main"
           title: ${{ env.PR_TITLE }}
           assignee: ${{ github.actor }}
-          new_string: ${{ github.event.commits[0].message }}
           reviewers: ${{ env.REVIEWER }}
+          new_string: ${{ github.event.commits[0].message }}
           get_diff: true
