@@ -17,7 +17,8 @@ jobs:
       - name: Extract Package and Version
         id: extract_package_version
         run: |
-          BRANCH="${{ github.event.pull_request.head.ref }}"
+          BRANCH="${{ github.ref }}"
+          echo "BRANCH=$BRANCH"
           PACKAGE=$(echo "$BRANCH" | cut -d '/' -f 2)
           VERSION=$(echo "$BRANCH" | cut -d '/' -f 3)
           echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
