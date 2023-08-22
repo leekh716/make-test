@@ -2,6 +2,15 @@
 
 .PHONY: help release
 
+RED = \033[0;31m
+GREEN = \033[0;32m
+YELLOW = \033[0;33m
+BLUE = \033[0;34m
+PURPLE = \033[1;35m
+CYAN = \033[0;36m
+WHITE = \033[0;37m
+RESET = \033[0m
+
 help:
 	@echo "Usage: make release [name=<package_name>] [version=<release_version>]"
 	@echo ""
@@ -27,3 +36,4 @@ release:
 	git rebase develop
 	git rebase main
 	git push -u origin release/$(name)/$(version)
+	@echo "$(PURPLE)release/$(name)/$(version)$(RESET) $(WHITE)PR is created!$(RESET)"
