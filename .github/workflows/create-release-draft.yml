@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: release-drafter/release-drafter@v5
         with:
-          config-path: .github/release-draft.yml
+          config-name: release-draft.yml
           tag: ${{ github.ref }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
