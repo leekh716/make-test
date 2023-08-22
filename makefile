@@ -34,6 +34,8 @@ release:
 	git add --all
 	git commit -am "release($(name)): $(version)"
 	git rebase develop
+	@echo "$(PURPLE)git rebase develop$(RESET) $(WHITE)succeeded!$(RESET)"
 	git rebase main
+	@echo "$(PURPLE)git rebase main$(RESET) $(WHITE)succeeded!$(RESET)"
 	git push -u origin release/$(name)/$(version)
-	@echo "$(PURPLE)release/$(name)/$(version)$(RESET) $(WHITE)PR is created!$(RESET)"
+	@echo "$(PURPLE)release/$(name)/$(version)$(RESET) $(WHITE)branch is pushed!$(RESET)"
