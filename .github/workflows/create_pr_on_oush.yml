@@ -20,7 +20,7 @@ jobs:
           PACKAGE_NAME=$(echo $BRANCH_NAME | cut -d/ -f2)
           RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
-          ASSIGNEE=github.event.commits[0].author.name
+          ASSIGNEE=${{github.event.commits[0].author.name}}
 
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
