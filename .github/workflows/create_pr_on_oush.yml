@@ -23,6 +23,10 @@ jobs:
           RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+          if [ $GITHUB_ACTOR} ="kunlee" ]; then
+            cho REVIEWER="rhiokim" >> $GITHUB_ENV
+          else
+            echo REVIEWER="kunlee" >> $GITHUB_ENV
 
       - name: Create Pull Request
         uses: devops-infra/action-pull-request@v0.5.5
@@ -32,4 +36,5 @@ jobs:
           title: ${{ env.PR_TITLE }}
           assignee: ${{ github.actor }}
           new_string: ${{ github.event.commits[0].message }}
+          reviewers: ${{ env.REVIEWER }}
           get_diff: true
