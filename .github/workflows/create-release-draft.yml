@@ -14,9 +14,39 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Package and Version
+        id: extract_package_version
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          PACKAGE=$(echo "$BRANCH" | cut -d '/' -f 2)
+          VERSION=$(echo "$BRANCH" | cut -d '/' -f 3)
+          echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Set Release Tag
+        id: set_release_tag
+        run: |
+          TAG_NAME="${{ env.PACKAGE }}@v${{ env.VERSION }}"
+          echo "Tag name = $TAG_NAME"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+
       - uses: release-drafter/release-drafter@v5
+        id: drafter
         with:
           config-name: release-draft.yml
-          tag: ${{ github.ref }}
+          tag: ${{ env.TAG_NAME }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post to a Slack channel
+        uses: slackapi/slack-github-action@v1.23.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: ""
+          # For posting a simple plain text message
+          slack-message: "Draft created: *${{ job.status }}* | <${{ steps.drafter.outputs.html_url }}| See Draft >"
+        env:
+          # 슬랙봇에
+          # https://github.com/ebrain-lab/okky-web-monorepo/settings/secrets/actions
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
