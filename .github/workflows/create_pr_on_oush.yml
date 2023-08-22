@@ -26,7 +26,7 @@ jobs:
           if [ ${{ github.actor }} =leekh716 ]; then
             echo REVIEWER="rhiokim" >> $GITHUB_ENV
           else
-            echo REVIEWER="kunlee" >> $GITHUB_ENV
+            echo REVIEWER=${{ github.actor }} >> $GITHUB_ENV
           fi
 
       - name: Create Pull Request
