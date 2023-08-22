@@ -17,6 +17,10 @@ jobs:
       - name: Extract Package and Version
         id: extract_package_version
         run: |
+          raw=$(git branch -r --contains ${{ github.ref }})
+          branch=${raw##*/}
+          echo "{name}=branch" >> $GITHUB_OUTPUT
+          echo "Branch is $branch."
           BRANCH="${{ github.ref }}"
           echo "BRANCH=$BRANCH"
           PACKAGE=$(echo "$BRANCH" | cut -d '/' -f 2)
