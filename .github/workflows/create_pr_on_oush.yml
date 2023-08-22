@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Set Environment Variables
         run: |
@@ -30,6 +32,7 @@ jobs:
         uses: devops-infra/action-pull-request@v0.5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: "main"
           title: $PR_TITLE
           assignee: ${{ github.event.commits[0].author.name }}
           label: automatic,feature
@@ -37,4 +40,3 @@ jobs:
           old_string: "**Write you description here**"
           new_string: ${{ github.event.commits[0].message }}
           get_diff: true
-          target_branch: "main"
