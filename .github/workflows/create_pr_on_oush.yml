@@ -35,8 +35,6 @@ jobs:
           target_branch: "main"
           title: $PR_TITLE
           assignee: ${{ github.event.commits[0].author.name }}
-          label: automatic,feature
-          template: .github/PULL_REQUEST_TEMPLATE/FEATURE.md
           old_string: "**Write you description here**"
           new_string: ${{ github.event.commits[0].message }}
           get_diff: true
