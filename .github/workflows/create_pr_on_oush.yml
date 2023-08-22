@@ -20,12 +20,12 @@ jobs:
           PACKAGE_NAME=$(echo $BRANCH_NAME | cut -d/ -f2)
           RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
-          ASSIGNEE=${{github.event.commits[0].author.name}}
+          ASSIGNEE=$(github.event.commits[0].author.name)
 
           GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
           # Create Pull Request
-          curl -X POST \
+          response=$(curl -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
@@ -34,4 +34,11 @@ jobs:
               "base": "main",
               "assignees": ["'"$ASSIGNEE"'"],
             }' \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls"
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pulls")
+
+            if [[ $? -ne 0 ]]; then
+            echo "Create PR Curl command failed"
+            exit 1
+          fi
+
+          echo "Create PR succeeded"
