@@ -27,6 +27,7 @@ jobs:
             echo REVIEWER="rhiokim" >> $GITHUB_ENV
           else
             echo REVIEWER="kunlee" >> $GITHUB_ENV
+          fi
 
       - name: Create Pull Request
         uses: devops-infra/action-pull-request@v0.5.5
