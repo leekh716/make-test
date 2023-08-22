@@ -24,17 +24,12 @@ jobs:
           PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
 
-      # - name: Get Author
-      #   id: get_author
-      #   run: echo "::set-output name=author::${{ toJson(github.event.commits[0].author.name) }}"
-
       - name: Create Pull Request
         uses: devops-infra/action-pull-request@v0.5.5
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           target_branch: "main"
-          title: $PR_TITLE
-          assignee: ${{ github.event.commits[0].author.name }}
-          old_string: "**Write you description here**"
+          title: ${{ env.PR_TITLE }}
+          assignee: ${{ github.actor }}
           new_string: ${{ github.event.commits[0].message }}
           get_diff: true
