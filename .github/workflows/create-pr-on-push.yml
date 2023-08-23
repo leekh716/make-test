@@ -12,6 +12,9 @@ jobs:
     outputs:
       runner: ${{ steps.set_runner.outputs.runner }}
       branch_type: ${{ steps.set_var.outputs.branch_type }}
+      package_name: ${{ steps.set_var.outputs.package_name }}
+      release_version: ${{ steps.set_var.outputs.release_version }}
+      reviewer: ${{ steps.set_var.outputs.reviewer }}
     name: A job to check the PR labels contain given labels
     steps:
       - name: Check PR labels action step
@@ -37,12 +40,12 @@ jobs:
           PACKAGE_NAME=$(echo $BRANCH_NAME | cut -d/ -f2)
           RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
           echo "branch_type=$BRANCH_TYPE" >> $GITHUB_OUTPUT
-          PR_TITLE=":package:release/$PACKAGE_NAME/$RELEASE_VERSION staging 배포"
-          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
           if [ ${{ github.actor }} = "leekh716" ]; then
-            echo REVIEWER="rhiokim" >> $GITHUB_ENV
+            echo reviewer="rhiokim" >> $GITHUB_OUTPUT
           else
-            echo REVIEWER="leekh716" >> $GITHUB_ENV
+            echo reviewer="leekh716" >> $GITHUB_OUTPUT
           fi
 
   create_release_pr:
@@ -56,6 +59,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set Environment Variables
+        run: |
+          PR_TITLE=":package:release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }} staging 배포"
+          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+
       - name: Create Pull Request
         uses: devops-infra/action-pull-request@v0.5.5
         with:
@@ -63,7 +71,7 @@ jobs:
           target_branch: "main"
           title: ${{ env.PR_TITLE }}
           assignee: ${{ github.actor }}
-          reviewer: ${{ env.REVIEWER }}
+          reviewer: ${{ needs.setup.outputs.reviewer }}
           new_string: ${{ github.event.commits[0].message }}
           get_diff: false
 
@@ -91,6 +99,6 @@ jobs:
           target_branch: "develop"
           title: ${{ env.PR_TITLE }}
           assignee: ${{ github.actor }}
-          reviewer: ${{ env.REVIEWER }}
+          reviewer: ${{ needs.setup.outputs.reviewer }}
           new_string: ${{ github.event.commits[0].message }}
           get_diff: false
