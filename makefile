@@ -11,8 +11,10 @@ CYAN = \033[0;36m
 WHITE = \033[0;37m
 RESET = \033[0m
 
+DATE = $(shell date +%Y%m%d%H%M%S)
+
 help:
-	@echo "Usage: make release [name=<package_name>] [version=<release_version>]"
+	@echo "Usage: make [release | sync] [name=<package_name>] [version=<release_version>]"
 	@echo ""
 	@echo "Example:"
 	@echo "  make release name=your_package_name version=1.0.0"
@@ -41,3 +43,16 @@ release:
 	@echo "$(PURPLE)git rebase main$(RESET) $(WHITE)succeeded!$(RESET)"
 	git push -u origin release/$(name)/$(version)
 	@echo "$(PURPLE)release/$(name)/$(version)$(RESET) $(WHITE)branch is pushed!$(RESET)"
+
+sync:
+	git checkout main
+	git pull -r origin main
+	git checkout develop
+	git pull -r origin develop
+	git switch -c fix/okky-jobs-web/$(DATE)
+	git rebase main
+	@echo "$(PURPLE)git rebase main$(RESET) $(WHITE)succeeded!$(RESET)"
+	git rebase develop
+	@echo "$(PURPLE)git rebase develop$(RESET) $(WHITE)succeeded!$(RESET)"
+	git push -u origin fix/okky-jobs-web/$(DATE)
+	@echo "$(PURPLE)fix/okky-jobs-web/$(DATE)$(RESET) $(WHITE)branch is pushed!$(RESET)"
