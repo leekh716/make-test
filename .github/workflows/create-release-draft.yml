@@ -41,6 +41,8 @@ jobs:
         with:
           config-name: release-draft.yml
           tag: ${{ env.TAG_NAME }}
+          name: ${{ env.TAG_NAME }}
+          commitish: "main"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
