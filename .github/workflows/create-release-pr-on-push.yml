@@ -9,7 +9,7 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      result: ${{ steps.check_pr_labels.outputs.result }}
+      result: ${{ steps.set_runner.outputs.runner }}
     name: A job to check the PR labels contain given labels
     steps:
       - name: Check PR labels action step
@@ -22,10 +22,10 @@ jobs:
       - name: set runner
         id: set_runner
         run: |
-          if [ ${{ steps.check_pr_labels.outputs.result }} = "true" ]; then
-            echo "RUNNER=ubuntu-latest" >> $GITHUB_OUTPUT
+          if [ ${{ steps.check_pr_labels.outputs.result }}=true ]; then
+            echo "runner=ubuntu-latest" >> $GITHUB_OUTPUT
           else
-            echo "RUNNER=self-hosted" >> $GITHUB_OUTPUT
+            echo "runner=self-hosted" >> $GITHUB_OUTPUT
           fi
 
   create_pr:
