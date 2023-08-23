@@ -24,7 +24,7 @@ jobs:
       - name: set runner
         id: set_runner
         run: |
-          if [ ${{ steps.check_pr_labels.outputs.result }} == "true" ]; then
+          if [ ${{ steps.check_pr_labels.outputs.result }} == "false" ]; then
             echo "runner=ubuntu-latest" >> $GITHUB_OUTPUT
           else
             echo "runner=self-hosted" >> $GITHUB_OUTPUT
