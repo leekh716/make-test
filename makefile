@@ -49,10 +49,10 @@ sync:
 	git pull -r origin main
 	git checkout develop
 	git pull -r origin develop
-	git switch -c fix/okky-jobs-web/$(DATE)
+	git switch -c sync/$(DATE)
 	git rebase main
 	@echo "$(PURPLE)git rebase main$(RESET) $(WHITE)succeeded!$(RESET)"
 	git rebase develop
 	@echo "$(PURPLE)git rebase develop$(RESET) $(WHITE)succeeded!$(RESET)"
-	git push -u origin fix/okky-jobs-web/$(DATE)
-	@echo "$(PURPLE)fix/okky-jobs-web/$(DATE)$(RESET) $(WHITE)branch is pushed!$(RESET)"
+	git push -u origin sync/$(DATE)
+	@echo "$(PURPLE)sync/$(DATE)$(RESET) $(WHITE)branch is pushed!$(RESET)"
