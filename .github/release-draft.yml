@@ -1,5 +1,3 @@
-name-template: "v$RESOLVED_VERSION 🌈"
-
 template: |
   ## 변경사항
 
@@ -19,38 +17,26 @@ categories:
     label:
       - "chore"
       - "refactor"
+  - title: " Update"
+    label: "⬆️ update"
+  - title: "📦 Release"
+    label: "update"
 
-version-resolver:
-  major:
-    labels:
-      - "major"
-  minor:
-    labels:
-      - "minor"
-  patch:
-    labels:
-      - "patch"
-  default: patch
-
-autolabeler: # PR에 자동으로 label 붙혀주는 규칙
-  - label: "chore"
-    files:
-      - "*.md"
+autolabeler:
+  - label: "maintenance"
     branch:
-      - '/docs{0,1}\/.+/'
-    title:
-      - "/chore/i"
-      - "/refactor/i"
+      - '/chore\/.+/'
+      - '/refactor\/.+/'
   - label: "bug"
     branch:
       - '/fix\/.+/'
-    title:
-      - "/fix/i"
-      - "/hotfix/i"
-      - "/bug/i"
   - label: "feature"
-    title:
-      - "/feat/i"
     branch:
       - '/feature\/.+/'
       - '/feat\/.+/'
+  - label: "update"
+    branch:
+      - '/update\/.+/'
+  - label: "release"
+    branch:
+      - '/release\/.+/'

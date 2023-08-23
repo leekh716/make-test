@@ -1,0 +1,5 @@
+feature: ["feature/*", "feat/*"]
+fix: fix/*
+maintenance: ["chore/*", "refactor/*"]
+update: update/*
+release: release/*
