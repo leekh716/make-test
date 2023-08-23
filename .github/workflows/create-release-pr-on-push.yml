@@ -6,11 +6,32 @@ on:
       - "release/*/*"
 
 jobs:
+  check_pr_labels:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check_pr_labels.outputs.result }}
+    name: A job to check the PR labels contain given labels
+    steps:
+      - name: Check PR labels action step
+        id: check_pr_labels
+        uses: shioyang/check-pr-labels-on-push-action@v1.0.9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          labels: '["by-ubuntu"]'
+        timeout-minutes: 2
+      - name: See result
+        run: echo "${{ steps.check_pr_labels.outputs.result }}"
+
   create_pr:
     permissions: write-all
-    runs-on: ubuntu-latest
-
+    needs: check_pr_labels
+    env:
+      RUN_LABEL_EXIST: ${{ needs.check_pr_labels.outputs.result }}
+    runs-on: if $RUN_LABEL_EXIST == 'true' }} ; then ubuntu-latest; else self-hosted; fi
     steps:
+      - name: check env
+        run: echo $RUN_LABEL_EXIST
+
       - name: Checkout code
         uses: actions/checkout@v2
         with:
