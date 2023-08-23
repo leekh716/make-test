@@ -31,7 +31,7 @@ jobs:
   create_pr:
     permissions: write-all
     needs: [setup]
-    runs-on: ${{ needs.setup.outputs.result }}
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
