@@ -1,0 +1,5 @@
+feature :sparkles:: ["feature/*", "feat/*"]
+fix :hammer:: fix/*
+maintenance :toolbox:: ["chore/*", "refactor/*"]
+update :arrow_up:: update/*
+release :package:: release/*
