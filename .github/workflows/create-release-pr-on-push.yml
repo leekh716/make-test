@@ -6,7 +6,7 @@ on:
       - "release/*/*"
 
 jobs:
-  check_pr_labels:
+  setup:
     runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.check_pr_labels.outputs.result }}
@@ -18,20 +18,21 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["by-ubuntu"]'
-        timeout-minutes: 2
-      - name: See result
-        run: echo "${{ steps.check_pr_labels.outputs.result }}"
+        timeout-minutes: 1
+      - name: set runner
+        id: set_runner
+        run: |
+          if [ ${{ steps.check_pr_labels.outputs.result }} = "true" ]; then
+            echo "RUNNER=ubuntu-latest" >> $GITHUB_OUTPUT
+          else
+            echo "RUNNER=self-hosted" >> $GITHUB_OUTPUT
+          fi
 
   create_pr:
     permissions: write-all
-    needs: check_pr_labels
-    env:
-      RUN_LABEL_EXIST: ${{ needs.check_pr_labels.outputs.result }}
-    runs-on: if $RUN_LABEL_EXIST='false' ; then ubuntu-latest; else self-hosted; fi
+    needs: [setup]
+    runs-on: ${{ needs.setup.outputs.result }}
     steps:
-      - name: check env
-        run: echo $RUN_LABEL_EXIST
-
       - name: Checkout code
         uses: actions/checkout@v2
         with:
