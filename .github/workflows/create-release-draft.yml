@@ -22,6 +22,7 @@ jobs:
       - name: Extract Package and Version
         id: extract_package_version
         run: |
+          BRANCH=$RECENT_MERGED_BRANCH_NAME
           echo "BRANCH=$RECENT_MERGED_BRANCH_NAME"
           PACKAGE=$(echo "$BRANCH" | cut -d '/' -f 2)
           VERSION=$(echo "$BRANCH" | cut -d '/' -f 3)
@@ -32,7 +33,7 @@ jobs:
         id: set_release_tag
         run: |
           TAG_NAME="${{ env.PACKAGE }}@v${{ env.VERSION }}"
-          echo "Tag name = $TAG_NAME"
+          echo "TAG_NAME=$TAG_NAME"
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
 
       - uses: release-drafter/release-drafter@v5
