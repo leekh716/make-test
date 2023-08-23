@@ -26,7 +26,8 @@ release:
 		echo "Error: 'version' parameter is required."; \
 		exit 1; \
 	fi
-	git pull -r develop
+	git checkout develop
+	git pull -r origin develop
 	git checkout main
 	git pull -r origin main
 	git switch -c release/$(name)/$(version)
