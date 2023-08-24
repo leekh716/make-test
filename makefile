@@ -22,7 +22,7 @@ help:
 	@echo "make release name=your_package_name version=1.0.0"
 
 release:
-	@make release_target name=$(name) version=$(version) || @make clean name=$(name) version=$(version)
+	@(MAKE) release_target name=$(name) version=$(version) || @(MAKE) clean name=$(name) version=$(version)
 
 release_target:
 	@if [ -z "$(name)" ]; then \
@@ -38,10 +38,10 @@ release_target:
 	git checkout main
 	git pull -r origin main
 	git switch -c release/$(name)/$(version)
-	cd packages/${name}; \
-		npm version $(version) --no-git-tag-version
-	git add --all
-	git commit -am "release($(name)): $(version)"
+	# cd packages/${name}; \
+	# 	npm version $(version) --no-git-tag-version
+	# git add --all
+	# git commit -am "release($(name)): $(version)"
 	git rebase develop
 	@echo "$(PURPLE)git rebase develop$(RESET) $(WHITE)succeeded!$(RESET)"
 	git rebase main
