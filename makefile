@@ -22,8 +22,7 @@ help:
 	@echo "make release name=your_package_name version=1.0.0"
 
 release:
-	@$(MAKE) release_target name=$(name) version=$(version) || true
-	@$(MAKE) clean name=$(name) version=$(version)
+	@$(MAKE) release_target name=$(name) version=$(version) || @$(MAKE) clean name=$(name) version=$(version)
 
 release_target:
 	@if [ -z "$(name)" ]; then \
