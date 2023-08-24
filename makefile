@@ -46,7 +46,7 @@ release_target:
 	@echo "$(PURPLE)git rebase develop$(RESET) $(WHITE)succeeded!$(RESET)"
 	git rebase main
 	@echo "$(PURPLE)git rebase main$(RESET) $(WHITE)succeeded!$(RESET)"
-	git push -u origin release/$(name)/$(version)
+	git push -u origindcd release/$(name)/$(version)
 	@echo "$(PURPLE)release/$(name)/$(version)$(RESET) $(WHITE)branch is pushed!$(RESET)"
 
 sync:
