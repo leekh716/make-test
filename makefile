@@ -39,7 +39,8 @@ release_target:
 	git checkout main
 	git pull -r origin main
 	git switch -c release/$(name)/$(version)
-	npm version $(version) --no-git-tag-version -w $(name)
+	cd packages/${name}; \
+		npm version $(version) --no-git-tag-version
 	git add --all
 	git commit -am "release($(name)): $(version)"
 	git rebase develop
