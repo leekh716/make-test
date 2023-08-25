@@ -10,95 +10,53 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      runner: ${{ steps.set_runner.outputs.runner }}
-      branch_type: ${{ steps.set_var.outputs.branch_type }}
-      package_name: ${{ steps.set_var.outputs.package_name }}
-      release_version: ${{ steps.set_var.outputs.release_version }}
-      reviewer: ${{ steps.set_var.outputs.reviewer }}
-    name: A job to check the PR labels contain given labels
+      branch_type: ${{ steps.branch.outputs._2 }}
+      package_name: ${{ steps.branch.outputs._3 }}
+      release_version: ${{ steps.branch.outputs._3 }}
+    name: Set Variables
     steps:
-      - name: Check PR labels action step
-        id: check_pr_labels
-        uses: shioyang/check-pr-labels-on-push-action@v1.0.9
+      - uses: ebrain-lab/split-by@master
+        id: branch
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["by-ubuntu"]'
-        timeout-minutes: 1
-      - name: set runner
-        id: set_runner
+          string: $GITHUB_REF
+          split-by: "/"
+      - id: set_var
         run: |
-          if [ ${{ steps.check_pr_labels.outputs.result }} == "false" ]; then
-            echo "runner=ubuntu-latest" >> $GITHUB_OUTPUT
-          else
-            echo "runner=self-hosted" >> $GITHUB_OUTPUT
-          fi
-      - name: Set Variables
-        id: set_var
-        run: |
-          BRANCH_NAME=$(echo $GITHUB_REF | sed -e "s/refs\/heads\///")
-          BRANCH_TYPE=$(echo $BRANCH_NAME | cut -d/ -f1)
-          PACKAGE_NAME=$(echo $BRANCH_NAME | cut -d/ -f2)
-          RELEASE_VERSION=$(echo $BRANCH_NAME | cut -d/ -f3)
-          echo "branch_type=$BRANCH_TYPE" >> $GITHUB_OUTPUT
-          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
-          echo "release_version=$RELEASE_VERSION" >> $GITHUB_OUTPUT
-          if [ ${{ github.actor }} = "leekh716" ]; then
-            echo reviewer="rhiokim" >> $GITHUB_OUTPUT
-          else
-            echo reviewer="leekh716" >> $GITHUB_OUTPUT
-          fi
+          echo "branch_type=${{ steps.branch.outputs._2 }}"
+          echo "package_name=${{ steps.branch.outputs._3 }}"
+          echo "release_version=${{ steps.branch.outputs._4 }}"
 
   create_release_pr:
     if: ${{ needs.setup.outputs.branch_type == 'release' }}
-    permissions: write-all
     needs: [setup]
-    runs-on: ${{ needs.setup.outputs.runner }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Set Environment Variables
-        run: |
-          PR_TITLE=":package:release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }} staging 배포"
-          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+        uses: actions/checkout@v3
 
       - name: Create Pull Request
-        uses: devops-infra/action-pull-request@v0.5.5
+        uses: peter-evans/create-pull-request@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          target_branch: "main"
-          title: ${{ env.PR_TITLE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: "main"
+          title: ":package:release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }} staging 배포"
           assignee: ${{ github.actor }}
-          reviewer: ${{ needs.setup.outputs.reviewer }}
-          new_string: ${{ github.event.commits[0].message }}
-          get_diff: false
+          commit-message: ${{ github.event.commits[0].message }}
 
   create_sync_pr:
     if: ${{ needs.setup.outputs.branch_type == 'sync' }}
-    permissions: write-all
     needs: [setup]
-    runs-on: ${{ needs.setup.outputs.runner }}
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Set Environment Variables
-        run: |
-          PR_TITLE=":arrows_counterclockwise: develop main sync up"
-          echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
+        uses: actions/checkout@v3
 
       - name: Create Pull Request
-        uses: devops-infra/action-pull-request@v0.5.5
+        uses: peter-evans/create-pull-request@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          target_branch: "develop"
-          title: ${{ env.PR_TITLE }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: "develop"
+          title: ":arrows_counterclockwise: develop main sync up"
           assignee: ${{ github.actor }}
-          reviewer: ${{ needs.setup.outputs.reviewer }}
-          new_string: ${{ github.event.commits[0].message }}
-          get_diff: false
+          commit-message: ${{ github.event.commits[0].message }}
