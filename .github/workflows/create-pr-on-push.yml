@@ -20,12 +20,6 @@ jobs:
         with:
           string: ${{ github.ref }}
           split-by: "/"
-      - id: set_var
-        run: |
-          echo $GITHUB_REF
-          echo "branch_type=${{ steps.branch.outputs._2 }}"
-          echo "package_name=${{ steps.branch.outputs._3 }}"
-          echo "release_version=${{ steps.branch.outputs._4 }}"
 
   create_release_pr:
     if: ${{ needs.setup.outputs.branch_type == 'release' }}
@@ -34,7 +28,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+        with:
+          fetch-depth: 0
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
@@ -44,6 +39,7 @@ jobs:
           title: ":package:release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }} staging 배포"
           assignees: ${{ github.actor }}
           commit-message: ${{ github.event.commits[0].message }}
+          delete-branch: true
 
   create_sync_pr:
     if: ${{ needs.setup.outputs.branch_type == 'sync' }}
@@ -59,6 +55,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           base: develop
+          branch: sync/${{ needs.setup.outputs.package_name }}
           title: ":arrows_counterclockwise: develop main sync up"
           assignees: ${{ github.actor }}
           commit-message: ${{ github.event.commits[0].message }}
+          delete-branch: true
