@@ -15,7 +15,7 @@ jobs:
       release_version: ${{ steps.branch.outputs._3 }}
     name: Set Variables
     steps:
-      - uses: ebrain-lab/split-by@master
+      - uses: rishabhgupta/split-by@v1
         id: branch
         with:
           string: $GITHUB_REF
