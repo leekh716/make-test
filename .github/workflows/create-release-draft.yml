@@ -44,15 +44,15 @@ jobs:
       - uses: ebrain-lab/split-by@master
         id: branch
         with:
-          string: $RECENT_MERGED_BRANCH_NAME
+          string: ${{ env.RECENT_MERGED_BRANCH_NAME }}
           split-by: "/"
 
       - uses: release-drafter/release-drafter@v5
         id: drafter
         with:
           config-name: release-draft.yml
-          tag: "${{ steps.branch.outputs._1 }}@v${{ steps.branch.outputs._2 }}"
-          name: "${{ steps.branch.outputs._1 }}@v${{ steps.branch.outputs._2 }} 🌈"
+          tag: "${{ steps.branch.outputs._1 }}@${{ steps.branch.outputs._2 }}"
+          name: "${{ steps.branch.outputs._1 }}@${{ steps.branch.outputs._2 }} 🌈"
           commitish: "main"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
