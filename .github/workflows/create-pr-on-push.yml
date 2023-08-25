@@ -18,7 +18,7 @@ jobs:
       - uses: rishabhgupta/split-by@v1
         id: branch
         with:
-          string: $GITHUB_REF
+          string: ${{ github.ref }}
           split-by: "/"
       - id: set_var
         run: |
