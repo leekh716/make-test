@@ -12,7 +12,7 @@ jobs:
     outputs:
       branch_type: ${{ steps.branch.outputs._2 }}
       package_name: ${{ steps.branch.outputs._3 }}
-      release_version: ${{ steps.branch.outputs._3 }}
+      release_version: ${{ steps.branch.outputs._4 }}
     name: Set Variables
     steps:
       - uses: ebrain-lab/split-by@master
