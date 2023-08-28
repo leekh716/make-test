@@ -1,4 +1,4 @@
-name: create release Draft
+name: Create Release Draft
 
 on:
   push:
@@ -41,30 +41,18 @@ jobs:
         uses: actions/checkout@v2
       - name: Get Recent Merged Branch name
         uses: tonynguyenit18/github-action-custom-vars@v1
-
-      - name: Extract Package and Version
-        id: extract_package_version
-        run: |
-          BRANCH=$RECENT_MERGED_BRANCH_NAME
-          echo "BRANCH=$RECENT_MERGED_BRANCH_NAME"
-          PACKAGE=$(echo "$BRANCH" | cut -d '/' -f 2)
-          VERSION=$(echo "$BRANCH" | cut -d '/' -f 3)
-          echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Set Release Tag
-        id: set_release_tag
-        run: |
-          TAG_NAME="${{ env.PACKAGE }}@v${{ env.VERSION }}"
-          echo "TAG_NAME=$TAG_NAME"
-          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+      - uses: ebrain-lab/split-by@master
+        id: branch
+        with:
+          string: ${{ env.RECENT_MERGED_BRANCH_NAME }}
+          split-by: "/"
 
       - uses: release-drafter/release-drafter@v5
         id: drafter
         with:
           config-name: release-draft.yml
-          tag: ${{ env.TAG_NAME }}
-          name: "${{ env.TAG_NAME }} 🌈"
+          tag: "${{ steps.branch.outputs._1 }}@${{ steps.branch.outputs._2 }}"
+          name: "${{ steps.branch.outputs._1 }}@${{ steps.branch.outputs._2 }} 🌈"
           commitish: "main"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
