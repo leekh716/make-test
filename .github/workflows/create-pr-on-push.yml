@@ -12,7 +12,7 @@ jobs:
     outputs:
       branch_type: ${{ steps.branch.outputs._2 }}
       package_name: ${{ steps.branch.outputs._3 }}
-      release_version: ${{ steps.branch.outputs._4 }}
+      release_version: ${{ steps.branch.outputs._3 }}
     name: Set Variables
     steps:
       - uses: ebrain-lab/split-by@master
@@ -27,23 +27,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
         with:
-          ref: main
-      - name: Reset main branch
-        run: |
-          git fetch origin develop:develop
-          git reset --hard develop
+          fetch-depth: 0
+
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: devops-infra/action-pull-request@v0.5.5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: "main"
           title: ":package:release/${{ needs.setup.outputs.package_name }}/${{ needs.setup.outputs.release_version }} staging 배포"
-          assignees: ${{ github.actor }}
-          commit-message: ${{ github.event.commits[0].message }}
-          delete-branch: true
+          assignee: ${{ github.actor }}
+          new_string: ${{ github.event.commits[0].message }}
+          get_diff: false
 
   create_sync_pr:
     if: ${{ needs.setup.outputs.branch_type == 'sync' }}
@@ -52,15 +48,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: devops-infra/action-pull-request@v0.5.5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: develop
-          branch: sync/${{ needs.setup.outputs.package_name }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_branch: "develop"
           title: ":arrows_counterclockwise: develop main sync up"
-          assignees: ${{ github.actor }}
-          commit-message: ${{ github.event.commits[0].message }}
-          delete-branch: true
+          assignee: ${{ github.actor }}
+          new_string: ${{ github.event.commits[0].message }}
+          get_diff: false
