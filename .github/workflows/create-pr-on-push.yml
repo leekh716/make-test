@@ -22,7 +22,7 @@ jobs:
           split-by: "/"
 
   create_release_pr:
-    if: ${{ needs.setup.outputs.branch_type == 'release' }} && ${{ startsWith(needs.setup.outputs.package_name, 'okky-') }}
+    if: ${{ startsWith(needs.setup.outputs.package_name, 'okky-') }}
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
