@@ -5,6 +5,7 @@ on:
     branches:
       - "release/*/*"
       - "sync/*"
+    if: startsWith(github.ref, 'refs/heads/release/okky-')
 
 jobs:
   setup:
